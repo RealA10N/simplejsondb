@@ -1,16 +1,18 @@
 import os
 import json
 import typing
+import atexit
 
 
 class Database:
 
-    def __init__(
-        self,
-        name: str,
-        extention: str = 'json',
-        folder: str = None,
-    ):
+    def __init__(self,
+                 name: str,
+                 extention: str = 'json',
+                 folder: str = None,
+
+                 save_at_exit: bool = True,
+                 ):
 
         if folder is None:
             # If folder path is not given, generates the path
@@ -22,6 +24,9 @@ class Database:
 
         if os.path.isfile(self.path):
             self._data = self.__load()
+
+        if save_at_exit:
+            atexit.register(self.save)
 
     def __load(self,):
         """ Loads the database from the database path, and returns the loads
