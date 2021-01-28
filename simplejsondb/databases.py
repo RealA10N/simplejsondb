@@ -1,4 +1,6 @@
 import os
+import json
+import typing
 
 
 class Database:
@@ -17,6 +19,31 @@ class Database:
         self.name = name
         self.extention = extention
         self.folder = folder
+
+        if os.path.isfile(self.path):
+            self._data = self.__load()
+
+    def __load(self,):
+        """ Loads the database from the database path, and returns the loads
+        json data. Called when the database is constructed, and when the
+        database file exists. """
+
+        with open(self.path, 'r') as file:
+            return json.load(file)
+
+    def save(self,
+             indent: typing.Optional[int] = 4,
+             ):
+        """ Saves the data in the database into the local storage, as a json
+        file. """
+
+        # Creates the folders that will contain the json files (if they
+        # don't exist yet)
+        os.makedirs(self.folder, exist_ok=True)
+
+        # Actually saves the data to the json file
+        with open(self.path, 'w') as file:
+            json.dump(self._data, file, indent=indent)
 
     @property
     def path(self,):
