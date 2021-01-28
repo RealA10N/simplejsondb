@@ -61,6 +61,21 @@ class Database:
         """ The path to the json file that contains the database. """
         return os.path.join(self.folder, f'{self.name}.{self.extention}')
 
+    def set(self, data):
+        """ Recives some data, and sets it to be the data that is stored in
+        the database.
+
+        Note: Using this method is not recommended. This method will replace
+        the saved data in the database with the new data, and the old data will
+        be erased. """
+
+        self._validate_data(data)
+        self._data = data
+
+    def copy(self,):
+        """ Returns a copy of the data in the database. """
+        return self._data
+
     def _validate_data(self, data):
         """ The database saves its data locally using the `json` format.
         This format supports only the basic data types, which are:
