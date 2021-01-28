@@ -6,6 +6,8 @@ import atexit
 
 class Database:
 
+    EMPTY_DB = None
+
     def __init__(self,
                  name: str,
                  extention: str = 'json',
@@ -24,6 +26,10 @@ class Database:
 
         if os.path.isfile(self.path):
             self._data = self.__load()
+        else:
+            # If database file doesn't exist yet (and there is no data to load),
+            # sets the data to the default empty value.
+            self._data = self.EMPTY_DB
 
         if save_at_exit:
             atexit.register(self.save)
