@@ -174,3 +174,50 @@ class Database:
 
             for value in data:
                 self._validate_data(value)
+
+
+class ListDatabase(Database):
+    """ Same as the basic `Database` object, but with more methods to better
+    support a list database. """
+
+    DB_TYPE = list
+
+    def append(self, data) -> None:
+        """ Adds the given data at the end of the database list. """
+        self._validate_data(data)
+        self._data.append(data)
+
+    def extend(self, iterable: typing.Iterable) -> None:
+        """ Add the elements of a given list (or any iterable), to the end of
+        the database list. """
+        data = list(iterable)
+        self._validate_data(data)
+        self._data.extend(data)
+
+    def index(self, element) -> int:
+        """ Returns the index of the first element with the specified value
+        from the database. """
+        return self._data.index(element)
+
+    def insert(self, position: int, element) -> None:
+        """ Adds an element at the specified position to the database. """
+        self._validate_data(element)
+        self._data.insert(position, element)
+
+    def pop(self, position: int) -> typing.Any:
+        """ Removes and returns the element at the specified position from
+        the database. """
+        return self._data.pop(position)
+
+    def remove(self, element) -> None:
+        """ Removes the first item with the specified value from the
+        database. """
+        return self._data.remove(element)
+
+    def reverse(self,) -> None:
+        """ Reverses the order of the database list. """
+        self._data.reverse()
+
+    def sort(self,):
+        """ Sorts the database list. """
+        self._data.sort()
