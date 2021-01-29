@@ -6,6 +6,7 @@ import copy
 
 
 class Database:
+    """ The most basic json database available. """
 
     DB_TYPE = None
 
@@ -34,6 +35,8 @@ class Database:
 
         if save_at_exit:
             atexit.register(self.save)
+
+    # - - M A G I C - M E T H O D S - - #
 
     def __str__(self,):
         """ Returns a string that represents the current database instance. """
@@ -65,6 +68,49 @@ class Database:
         method. """
         return self.count()
 
+    # - - G E N E R A L - M E T H O D S - - #
+
+    def count(self,):
+        """ Returns the number of values in the database. """
+        return len(self._data)
+
+    def set(self, data):
+        """ Recives some data, and sets it to be the data that is stored in
+        the database.
+
+        Note: Using this method is not recommended. This method will replace
+        the saved data in the database with the new data, and the old data will
+        be erased. """
+
+        # pylint: disable=isinstance-second-argument-not-valid-type
+
+        if self.DB_TYPE is not None and not isinstance(data, self.DB_TYPE):
+            raise TypeError(
+                f"The '{self.__class__.__name__}' object only supports '{self.DB_TYPE.__name__}' (not {type(data)})"
+            )
+
+        self._validate_data(data)
+        self._data = data
+
+    def clear(self,):
+        """ Removes all the elements from the database. """
+
+        # If the database type is callable (for example: list, dict, etc),
+        # creates a new instance of the object and saves it in the database.
+        # Otherwise, saves the database type as the data in the database.
+
+        if callable(self.DB_TYPE):
+            self._data = self.DB_TYPE()  # pylint: disable=not-callable
+
+        else:
+            self._data = self.DB_TYPE
+
+    def copy(self,):
+        """ Returns a copy of the data in the database. """
+        return copy.deepcopy(self._data)
+
+    # - - D A T A B A S E - M E T H O D S - - #
+
     def __load(self,):
         """ Loads the database from the database path, and returns the loads
         json data. Called when the database is constructed, and when the
@@ -87,49 +133,10 @@ class Database:
         with open(self.path, 'w') as file:
             json.dump(self._data, file, indent=indent)
 
-    def clear(self,):
-        """ Removes all the elements from the database. """
-
-        # If the database type is callable (for example: list, dict, etc),
-        # creates a new instance of the object and saves it in the database.
-        # Otherwise, saves the database type as the data in the database.
-
-        if callable(self.DB_TYPE):
-            self._data = self.DB_TYPE()  # pylint: disable=not-callable
-
-        else:
-            self._data = self.DB_TYPE
-
-    def count(self,):
-        """ Returns the number of values in the database. """
-        return len(self._data)
-
     @property
     def path(self,):
         """ The path to the json file that contains the database. """
         return os.path.join(self.folder, f'{self.name}.{self.extention}')
-
-    def set(self, data):
-        """ Recives some data, and sets it to be the data that is stored in
-        the database.
-
-        Note: Using this method is not recommended. This method will replace
-        the saved data in the database with the new data, and the old data will
-        be erased. """
-
-        # pylint: disable=isinstance-second-argument-not-valid-type
-
-        if self.DB_TYPE is not None and not isinstance(data, self.DB_TYPE):
-            raise TypeError(
-                f"The '{self.__class__.__name__}' object only supports '{self.DB_TYPE.__name__}' (not {type(data)})"
-            )
-
-        self._validate_data(data)
-        self._data = data
-
-    def copy(self,):
-        """ Returns a copy of the data in the database. """
-        return copy.deepcopy(self._data)
 
     def _validate_data(self, data):
         """ The database saves its data locally using the `json` format.
