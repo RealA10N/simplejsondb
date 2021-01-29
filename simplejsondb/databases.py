@@ -29,10 +29,40 @@ class Database:
         else:
             # If database file doesn't exist yet (and there is no data to load),
             # sets the data to the default empty value.
-            self._data = self.EMPTY_DB
+            self.clear()
 
         if save_at_exit:
             atexit.register(self.save)
+
+    def __str__(self,):
+        """ Returns a string that represents the current database instance. """
+        return f"<{self.__class__.__name__} {str(self._data)}>"
+
+    def __eq__(self, other):
+        """ Comperes the data in the database to the given data, and returns
+        `True` only if they are equal. """
+        return self._data == other
+
+    def __ne__(self, other):
+        """ Comperes the data in the database to the given data, and returns
+        `True` only if they are not equal. """
+        return not self == other  # returns the opposite of __eq__
+
+    def __getitem__(self, item):
+        """ Implementation of getting data from the database using brackets.
+        For example: `x = db[3]`. """
+        return self._data[item]
+
+    def __setitem__(self, item, value):
+        """ Implementation of setting and updating the data in the database
+        using brackets. For example: `db[2] = 'hello!'` """
+        self._validate_data(value)
+        self._data[item] = value
+
+    def __len__(self,):
+        """ Returns the number of values in the database. Uses the `count`
+        method. """
+        return self.count()
 
     def __load(self,):
         """ Loads the database from the database path, and returns the loads
@@ -55,6 +85,14 @@ class Database:
         # Actually saves the data to the json file
         with open(self.path, 'w') as file:
             json.dump(self._data, file, indent=indent)
+
+    def clear(self,):
+        """ Removes all the elements from the database. """
+        self._data = self.EMPTY_DB
+
+    def count(self,):
+        """ Returns the number of values in the database. """
+        return len(self._data)
 
     @property
     def path(self,):
