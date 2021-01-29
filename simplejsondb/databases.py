@@ -27,7 +27,7 @@ class Database:
         self.folder = folder
 
         if os.path.isfile(self.path):
-            self._data = self.__load()
+            self.set(self.__load())
         else:
             # If database file doesn't exist yet (and there is no data to load),
             # sets the data to the default empty value.
