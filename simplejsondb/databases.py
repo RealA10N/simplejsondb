@@ -7,7 +7,7 @@ import copy
 
 class Database:
 
-    EMPTY_DB = None
+    DB_TYPE = None
 
     def __init__(self,
                  name: str,
@@ -89,7 +89,16 @@ class Database:
 
     def clear(self,):
         """ Removes all the elements from the database. """
-        self._data = self.EMPTY_DB
+
+        # If the database type is callable (for example: list, dict, etc),
+        # creates a new instance of the object and saves it in the database.
+        # Otherwise, saves the database type as the data in the database.
+
+        if callable(self.DB_TYPE):
+            self._data = self.DB_TYPE()  # pylint: disable=not-callable
+
+        else:
+            self._data = self.DB_TYPE
 
     def count(self,):
         """ Returns the number of values in the database. """
@@ -107,6 +116,13 @@ class Database:
         Note: Using this method is not recommended. This method will replace
         the saved data in the database with the new data, and the old data will
         be erased. """
+
+        # pylint: disable=isinstance-second-argument-not-valid-type
+
+        if self.DB_TYPE is not None and not isinstance(data, self.DB_TYPE):
+            raise TypeError(
+                f"The '{self.__class__.__name__}' object only supports '{self.DB_TYPE.__name__}' (not {type(data)})"
+            )
 
         self._validate_data(data)
         self._data = data
