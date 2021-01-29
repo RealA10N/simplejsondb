@@ -218,6 +218,6 @@ class ListDatabase(Database):
         """ Reverses the order of the database list. """
         self._data.reverse()
 
-    def sort(self,):
+    def sort(self,) -> None:
         """ Sorts the database list. """
         self._data.sort()
