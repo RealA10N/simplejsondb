@@ -54,11 +54,11 @@ class Database:
         For example: `x = db[3]`. """
         return self._data[item]
 
-    def __setitem__(self, item, value):
+    def __setitem__(self, key, value):
         """ Implementation of setting and updating the data in the database
         using brackets. For example: `db[2] = 'hello!'` """
         self._validate_data(value)
-        self._data[item] = value
+        self._data[key] = value
 
     def __len__(self,):
         """ Returns the number of values in the database. Uses the `count`
