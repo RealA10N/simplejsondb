@@ -2,6 +2,7 @@ import os
 import json
 import typing
 import atexit
+import copy
 
 
 class Database:
@@ -112,7 +113,7 @@ class Database:
 
     def copy(self,):
         """ Returns a copy of the data in the database. """
-        return self._data
+        return copy.deepcopy(self._data)
 
     def _validate_data(self, data):
         """ The database saves its data locally using the `json` format.
