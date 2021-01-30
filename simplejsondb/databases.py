@@ -51,7 +51,7 @@ class Database:
 
     def __str__(self,) -> str:
         """ Returns a string that represents the current database instance. """
-        return f"<{self.__class__.__name__} {str(self._data)}>"
+        return f"{self.__class__.__name__}({str(self._data)})"
 
     def __eq__(self, other) -> bool:
         """ Comperes the data in the database to the given data, and returns
