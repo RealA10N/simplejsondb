@@ -221,3 +221,77 @@ class ListDatabase(Database):
     def sort(self,) -> None:
         """ Sorts the database list. """
         self._data.sort()
+
+
+class DictDatabase(Database):
+    """ Same as the basic `Database` object, but with more methods to better
+    support a dict database. """
+
+    DB_TYPE = dict
+
+    def __check_valid_key(self, key) -> None:
+        """ Recives a key to the database dictionary, and raises an error only
+        if the key is invalid. """
+
+        if not isinstance(key, str):
+            raise TypeError(
+                f"The '{self.__class__.__name__}' only supports string keys (not {type(key)})"
+            )
+
+    def __setitem__(self, key: str, value: typing.Any) -> None:
+        """ Implementation of setting and updating the data in the database
+        using brackets. For example: `db['hi'] = 'hello!'` """
+
+        self.__check_valid_key(key)
+        super().__setitem__(key, value)
+
+    def get(self, key: str, default=None,) -> typing.Any:
+        """ Returns the value of the specified key from the database. If the
+        given key doesn't exist in the database, returns the given default
+        value. """
+        return self._data.get(key, default)
+
+    def items(self,) -> list:
+        """ Returns a list containing a tuple for each key value pair in the
+        database.  """
+        return self._data.items()
+
+    def keys(self,) -> list:
+        """ Returns a list containing the database's keys. """
+        return self._data.keys()
+
+    def pop(self, key: str, default: typing.Any = None) -> typing.Any:
+        """ Removes the element with the specified key from the database, and
+        returns it. If the element doesn't exist in the database, raises a
+        TypeError. If a default value is provided, returns it instead of rasing
+        an error. """
+        return self._data.pop(key, default)
+
+    def popitem(self,) -> typing.Any:
+        """ Removes the item that was last inserted into the database. In
+        versions before 3.7, will remove and return a random item from the
+        dictionary. """
+        return self._data.popitem()
+
+    def setdefault(self, key: str, default: typing.Any = None) -> typing.Any:
+        """ Returns the value of the item with the specified key from the
+        database. If the key does not exist, inserts the key with the default
+        value. """
+        return self._data.setdefault(key, default)
+
+    def update(self, iterable: typing.Iterable) -> None:
+        """ Inserts the specified items to the database dictionary. The item
+        can be a dictionary, or an iterable object with key value pairs. """
+
+        data = dict(iterable)
+        for key in data:
+            self.__check_valid_key(key)
+
+        self._validate_data(data)
+        self._data.update(data)
+
+    def values(self,) -> list:
+        """ Returns a 'view' object that contains the values of the database
+        dictionary, as a list. The 'view' object will reflect any changes done
+        to the dictionary database. """
+        return self._data.values()
