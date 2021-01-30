@@ -4,6 +4,17 @@ import typing
 import atexit
 import copy
 
+# pylint: disable=unsubscriptable-object
+JsonSupportedTypes = typing.Union[
+    None,
+    str,
+    float,
+    int,
+    bool,
+    typing.List['JsonSupportedTypes'],
+    typing.Dict[str, 'JsonSupportedTypes'],
+]
+
 
 class Database:
     """ The most basic json database available. """
@@ -38,43 +49,43 @@ class Database:
 
     # - - M A G I C - M E T H O D S - - #
 
-    def __str__(self,):
+    def __str__(self,) -> str:
         """ Returns a string that represents the current database instance. """
         return f"<{self.__class__.__name__} {str(self._data)}>"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """ Comperes the data in the database to the given data, and returns
         `True` only if they are equal. """
         return self._data == other
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
         """ Comperes the data in the database to the given data, and returns
         `True` only if they are not equal. """
-        return not self == other  # returns the opposite of __eq__
+        return not self.__eq__(other)
 
     def __getitem__(self, item):
         """ Implementation of getting data from the database using brackets.
         For example: `x = db[3]`. """
         return self._data[item]
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value: JsonSupportedTypes):
         """ Implementation of setting and updating the data in the database
         using brackets. For example: `db[2] = 'hello!'` """
         self._validate_data(value)
         self._data[key] = value
 
-    def __len__(self,):
+    def __len__(self,) -> int:
         """ Returns the number of values in the database. Uses the `count`
         method. """
         return self.count()
 
     # - - G E N E R A L - M E T H O D S - - #
 
-    def count(self,):
+    def count(self,) -> int:
         """ Returns the number of values in the database. """
         return len(self._data)
 
-    def set(self, data):
+    def set(self, data: JsonSupportedTypes):
         """ Recives some data, and sets it to be the data that is stored in
         the database.
 
@@ -92,7 +103,7 @@ class Database:
         self._validate_data(data)
         self._data = data
 
-    def clear(self,):
+    def clear(self,) -> None:
         """ Removes all the elements from the database. """
 
         # If the database type is callable (for example: list, dict, etc),
@@ -105,13 +116,13 @@ class Database:
         else:
             self._data = self.DB_TYPE
 
-    def copy(self,):
+    def copy(self,) -> JsonSupportedTypes:
         """ Returns a copy of the data in the database. """
         return copy.deepcopy(self._data)
 
     # - - D A T A B A S E - M E T H O D S - - #
 
-    def __load(self,):
+    def __load(self,) -> JsonSupportedTypes:
         """ Loads the database from the database path, and returns the loads
         json data. Called when the database is constructed, and when the
         database file exists. """
@@ -121,7 +132,7 @@ class Database:
 
     def save(self,
              indent: typing.Optional[int] = 4,
-             ):
+             ) -> None:
         """ Saves the data in the database into the local storage, as a json
         file. """
 
@@ -134,11 +145,11 @@ class Database:
             json.dump(self._data, file, indent=indent)
 
     @property
-    def path(self,):
+    def path(self,) -> str:
         """ The path to the json file that contains the database. """
         return os.path.join(self.folder, f'{self.name}.{self.extention}')
 
-    def _validate_data(self, data):
+    def _validate_data(self, data: JsonSupportedTypes):
         """ The database saves its data locally using the `json` format.
         This format supports only the basic data types, which are:
         1.  string (`str`)
@@ -204,7 +215,7 @@ class ListDatabase(Database):
         self._validate_data(element)
         self._data.insert(position, element)
 
-    def pop(self, position: int) -> typing.Any:
+    def pop(self, position: int) -> JsonSupportedTypes:
         """ Removes and returns the element at the specified position from
         the database. """
         return self._data.pop(position)
@@ -238,14 +249,14 @@ class DictDatabase(Database):
                 f"The '{self.__class__.__name__}' only supports string keys (not {type(key)})"
             )
 
-    def __setitem__(self, key: str, value: typing.Any) -> None:
+    def __setitem__(self, key: str, value: JsonSupportedTypes) -> None:
         """ Implementation of setting and updating the data in the database
         using brackets. For example: `db['hi'] = 'hello!'` """
 
         self.__check_valid_key(key)
         super().__setitem__(key, value)
 
-    def get(self, key: str, default=None,) -> typing.Any:
+    def get(self, key: str, default=None,) -> JsonSupportedTypes:
         """ Returns the value of the specified key from the database. If the
         given key doesn't exist in the database, returns the given default
         value. """
@@ -260,20 +271,20 @@ class DictDatabase(Database):
         """ Returns a list containing the database's keys. """
         return self._data.keys()
 
-    def pop(self, key: str, default: typing.Any = None) -> typing.Any:
+    def pop(self, key: str, default: JsonSupportedTypes = None) -> JsonSupportedTypes:
         """ Removes the element with the specified key from the database, and
         returns it. If the element doesn't exist in the database, raises a
         TypeError. If a default value is provided, returns it instead of rasing
         an error. """
         return self._data.pop(key, default)
 
-    def popitem(self,) -> typing.Any:
+    def popitem(self,) -> JsonSupportedTypes:
         """ Removes the item that was last inserted into the database. In
         versions before 3.7, will remove and return a random item from the
         dictionary. """
         return self._data.popitem()
 
-    def setdefault(self, key: str, default: typing.Any = None) -> typing.Any:
+    def setdefault(self, key: str, default: JsonSupportedTypes = None) -> JsonSupportedTypes:
         """ Returns the value of the item with the specified key from the
         database. If the key does not exist, inserts the key with the default
         value. """
