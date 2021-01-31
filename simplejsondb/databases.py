@@ -23,7 +23,7 @@ class Database:
 
     def __init__(self,
                  name: str,
-                 extention: str = 'json',
+                 extension: str = 'json',
                  folder: str = None,
 
                  save_at_exit: bool = True,
@@ -34,7 +34,7 @@ class Database:
             folder = os.path.join(os.getcwd(), 'db')
 
         self.name = name
-        self.extention = extention
+        self.extension = extension
         self.folder = folder
 
         if os.path.isfile(self.path):
@@ -151,7 +151,7 @@ class Database:
     @property
     def path(self,) -> str:
         """ The path to the json file that contains the database. """
-        return os.path.join(self.folder, f'{self.name}.{self.extention}')
+        return os.path.join(self.folder, f'{self.name}.{self.extension}')
 
     def _validate_data(self, data: JsonSupportedTypes):
         """ The database saves its data locally using the `json` format.
