@@ -74,6 +74,10 @@ class Database:
         self._validate_data(value)
         self._data[key] = value
 
+    def __iter__(self,):
+        """ Iterate (loop over) the database. """
+        return self._data.__iter__()
+
     def __len__(self,) -> int:
         """ Returns the number of values in the database. Uses the `count`
         method. """
