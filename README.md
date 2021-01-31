@@ -38,3 +38,29 @@ for english, spanish in translations.items():
 # Hello in Spanish is Hola!
 # Goodbye in Spanish is Adiós!
 ```
+
+## Special Objects and Methods
+
+The *simplejsondb* module is designed to behave as close as possible to basic Python objects.
+To do that, in addition to the `Database` object, there are another two objects that *simplejsondb* provides: `ListDatabase` and `DictDatabase`.
+`ListDatabase` and `DictDatabase` behave exactly as the regular `Database` object, but in addition, you can use the built in python methods for lists and dictionaries, like `ListDatabase.append(data)` or `DictDatabase['Hello'] = Hola`.
+
+**In addition, the `Database`, `ListDatabase` and `DictDatabase` objects share a few special methods:**
+
+### Database.set(data)
+
+There is a small problem while using the `Database` instance. When you try to create a list or a dictionary, it automatically loads the database from the local storage. If you want to clear the saved data, and overwrite it with new data, you should use the `.set(data)`  method!
+
+It is also possible to use the **`Database.clear()`** method, to reset the database. This method will set the database data to `None` if the object is the default `Database` object,  `[]` if the object is a `ListDatabase`, and `{}` if the object is a `DictDatabae`.
+
+### Database.copy()
+
+Returns a copy of the data in the database. Plain and simple!
+
+### Database.save()
+
+By default, the database is loaded from the local storage when the instance is created. It is then saved in the memory, until the program exits - and only then the new and updated data is saved back in the local storage. By using the `Database.save()` method, you can save the database into the local storage before the program exists, in any given point.
+
+### Database.path
+
+`Database.path` is a property that contains the path to the database JSON file.
