@@ -1,4 +1,4 @@
-![Simple Json Datbase](/assets/banner.png)
+![Simple Json Database](/assets/banner.png)
 
 Do you need a simple, small, and very easy to use local database? You have come to the right place!
 with _simplejsondb_ you can create a simple JSON database with only one line of code, and we will take care of the rest!
