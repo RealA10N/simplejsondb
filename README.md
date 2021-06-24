@@ -80,7 +80,6 @@ using the `default` argument.
 
 - **path (str):** The path to the json database file.
 - **default:** The default data that will be loaded if the file doesn't exist yet.
-- **overwrite (bool):** If `True`, loads the `default` without checking if the file exists.
 - **save_at_exit (bool):** If `True` (default), will automatically dump the database
     into storage when the program exits.
 
