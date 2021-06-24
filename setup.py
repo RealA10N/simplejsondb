@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name="simplejsondb",
-    version="0.1.0",
+    version="0.2.0",
     description="Create a simple JSON database with just one line of code!",
     long_description=readme(),
     long_description_content_type='text/markdown',
