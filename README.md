@@ -4,6 +4,19 @@ Do you need a simple, small, and very easy to use local database? You have come
 to the right place! with _simplejsondb_ you can create a simple JSON database with
 only one line of code, and we will take care of the rest!
 
+- [A basic example](#a-basic-example)
+- [Installation](#installation)
+- [The `Database` object](#the-database-object)
+  - [`Database` constructor](#database-constructor)
+  - [Database.data](#databasedata)
+  - [Database.save(**additional)](#databasesaveadditional)
+  - [Database.load()](#databaseload)
+  - [Database.path](#databasepath)
+  - [Database.folder](#databasefolder)
+- [The `DatabaseFolder` object](#the-databasefolder-object)
+  - [`DatabaseFolder` constructor](#databasefolder-constructor)
+  - [Examples](#examples)
+
 ## A basic example
 
 ```python
@@ -68,20 +81,30 @@ installed using:
 $ (sudo) pip install setuptools
 ```
 
-## Methods
+## The `Database` object
 
-### Database(path, default=None, overwrite=False, save_at_exit=True)
+Each instance of the `Database` object is represented by a single json file in
+the local storage.
+
+### `Database` constructor
 
 The constructor of the `Database` instance. Receives a path to a `JSON` file, and
 tries to load it. If the file doesn't exist, loads the default data that is passed
 using the `default` argument.
 
-### Arguments
+### Arguments <!-- omit in toc -->
 
 - **path (str):** The path to the json database file.
 - **default:** The default data that will be loaded if the file doesn't exist yet.
+    `None` by default.
 - **save_at_exit (bool):** If `True` (default), will automatically dump the database
     into storage when the program exits.
+
+
+### Database.data
+
+A property that stores the data in the database. Writing and reading data should
+be done directly using this property.
 
 
 ### Database.save(**additional)
@@ -92,7 +115,7 @@ the new and updated data is saved back in the local storage. By using the
 `Database.save()` method, you can save the database into the local storage before
 the program exists, in any given point.
 
-#### Additional arguments
+#### Additional arguments <!-- omit in toc -->
 
 The `save` method supports receiving additional keyword arguments that are directly
 passed into the `json.dump` function. One useful argument can be `indent` that is
@@ -104,8 +127,6 @@ more information, check out the [json module documentation].
 Loads the data from the `json` file into the instance. Overwrites previous data that was
 saved under the `.data` property.
 
-## Properties
-
 ### Database.path
 
 A property that contains the path to the database JSON file.
@@ -114,5 +135,48 @@ A property that contains the path to the database JSON file.
 
 A property that stores the absolute path to the directory where the database json
 file lives in.
+
+## The `DatabaseFolder` object
+
+In larger projects, you may want to separate your database into multiple `json`
+files under the same directory. for that, it is possible to use the `DatabaseFolder`
+object, that lets you easily manage multiple `json` files, without dealing with
+different instances of the `Database` object.
+
+### `DatabaseFolder` constructor
+
+The constructor receives a path to a directory, and stores the it for later.
+
+#### Arguments <!-- omit in toc -->
+
+- **folder (str):** A path to a folder in the storage in which the database folder
+    will live.
+- **default_factory (callable):** A function that receives a string that represents
+    the name of a database file, and returns the default value for the file.
+    The default value is the following lambda function `lambda _: None` which will
+    return `None` no matter what the name of the file is.
+- **save_at_exit (bool):** If `True` (default), will automatically dump the database
+    into storage when the program exits.
+
+### Examples
+
+```python
+from simplejsondb import DatabaseFolder
+
+
+# Create a database under the 'db' folder
+# The default value in the files will be a list
+db = DatabaseFolder('db', default_factory=lambda _: list())
+
+# Append 'hello' in the 'db/file1.json'
+db['file1'].append('hello')
+
+# 'db/file2.json' will store a dictionary
+db['file2'] = dict()
+db['file2']['hello'] = 'there!'
+
+print(db['file2'])      # {'hello': 'there!'}
+```
+
 
 [json module documentation]: https://docs.python.org/3/library/json.html#json.dump
