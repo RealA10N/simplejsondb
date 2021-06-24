@@ -9,14 +9,14 @@ class Database:
 
     def __init__(self,
                  path: str,
-                 data: typing.Any = None,
+                 default: typing.Any = None,
                  overwrite: bool = False,
                  save_at_exit: bool = True,
                  ):
         self.path = path
 
         if not os.path.isfile(self.path) or overwrite:
-            self.data = data
+            self.data = default
 
         else:
             self.load()
