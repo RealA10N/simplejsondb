@@ -9,15 +9,17 @@ class Database:
 
     def __init__(self,
                  path: str,
+                 data: typing.Any = None,
+                 overwrite: bool = False,
                  save_at_exit: bool = True,
                  ):
         self.path = path
 
-        if os.path.isfile(self.path):
-            self.load()
+        if not os.path.isfile(self.path) or overwrite:
+            self.data = data
 
         else:
-            self.data = None
+            self.load()
 
         if save_at_exit:
             atexit.register(self.save)
