@@ -65,22 +65,27 @@ class Database(metaclass=DatabaseMeta):
 
 class DatabaseFolder:
 
-    def __init__(self, folder: str, **options):
+    def __init__(self,
+                 folder: str,
+                 default_factory: typing.Callable = lambda _: None,
+                 save_at_exit: bool = True,
+                 ):
         self.folder = folder
-        self._options = options
+        self._default_factory = default_factory
+        self._save_at_exit = save_at_exit
 
     def _name_to_filepath(self, name: str) -> str:
         return os.path.join(self.folder, f'{name}.json')
 
-    def __getitem__(self, name: str):
+    def database(self, name: str):
         return Database(
             self._name_to_filepath(name),
-            **self._options,
-        ).data
+            default=self._default_factory(name),
+            save_at_exit=self._save_at_exit,
+        )
+
+    def __getitem__(self, name: str):
+        return self.database(name).data
 
     def __setitem__(self, name: str, value):
-        Database(
-            self._name_to_filepath(name),
-            **self._options,
-        ).data = value
-
+        self.database(name).data = value
