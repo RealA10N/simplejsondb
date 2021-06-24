@@ -1,7 +1,8 @@
-from .databases import Database
+from .databases import Database, DatabaseFolder
 
 __all__ = [
     'Database',
+    'DatabaseFolder',
 ]
 
 __author__ = 'Alon Krymgand Osovsky'

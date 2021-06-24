@@ -61,3 +61,26 @@ class Database(metaclass=DatabaseMeta):
             json.dump(self.data, file, **additional)
 
         logger.debug('Saved data into file %s', self.path)
+
+
+class DatabaseFolder:
+
+    def __init__(self, folder: str, **options):
+        self.folder = folder
+        self._options = options
+
+    def _name_to_filepath(self, name: str) -> str:
+        return os.path.join(self.folder, f'{name}.json')
+
+    def __getitem__(self, name: str):
+        return Database(
+            self._name_to_filepath(name),
+            **self._options,
+        ).data
+
+    def __setitem__(self, name: str, value):
+        Database(
+            self._name_to_filepath(name),
+            **self._options,
+        ).data = value
+
