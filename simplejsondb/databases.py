@@ -5,11 +5,24 @@ import os
 import json
 import atexit
 
-
 logger = logging.getLogger(__name__)
 
 
-class Database:
+class DatabaseMeta(type):
+
+    _instances = dict()
+
+    def __call__(cls, path: str, *args, **kwargs):
+        path = os.path.abspath(path)
+
+        if path not in cls._instances:
+            cls._instances[path] = super(
+                DatabaseMeta, cls).__call__(path, *args, **kwargs)
+
+        return cls._instances[path]
+
+
+class Database(metaclass=DatabaseMeta):
 
     def __init__(self,
                  path: str,
